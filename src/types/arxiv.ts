@@ -6,4 +6,5 @@ export interface ArxivEntry {
   updatedDate: Date | null;
   authors: string[] | null;
   link: string | null;
+  summary?: string;
 }
