@@ -3,11 +3,11 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { fetchArxivContent } from '../../app/apiRequests';
 import FormattedDate from '../../components/FormattedDate.astro';
 
-
+const articles = (await fetchArxivContent());
 ---
-
 <!doctype html>
 <html lang="en">
 	<head>
@@ -25,22 +25,11 @@ import FormattedDate from '../../components/FormattedDate.astro';
 				padding: 0;
 			}
 			ul li {
-				width: calc(50% - 1rem);
+				width: 100%; /*calc(50% - 1rem)*/
 			}
 			ul li * {
 				text-decoration: none;
 				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
 			}
 			ul li img {
 				margin-bottom: 0.5rem;
@@ -88,7 +77,22 @@ import FormattedDate from '../../components/FormattedDate.astro';
 			<section>
 				<ul>
 					{
-						
+						articles.map((article) => (
+							<li>
+								<a href={`/blog/${article.link}/`}>
+									<h4 class="title">{article.title}</h4>
+									<p class="authors">
+										{article.authors?.join(', ')}
+									</p>
+									<p class="date">
+										{article.pubDate && <FormattedDate date={article.pubDate} />}
+									</p>
+									<p class="abstract">
+										{article.abstract}
+									</p>
+								</a>
+							</li>
+						))
 					}
 				</ul>
 			</section>
