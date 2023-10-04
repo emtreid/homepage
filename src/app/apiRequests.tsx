@@ -1,12 +1,15 @@
 import type { ArxivEntry } from '../types/arxiv';
 import { parseString } from 'xml2js';
+import { summarize } from './openai';
 
 export async function fetchArxivContent() {
   const response = await fetch(
     'https://export.arxiv.org/api/query?search_query=all:electron&start=0&max_results=10'
   );
   const feed = await response.text().then((text) => parseXml(text));
-  return feed;
+  const feedWithSummary = await populateSummary(feed);
+  console.log(feedWithSummary[0]);
+  return feedWithSummary;
 }
 
 function parseXml(xml: string): ArxivEntry[] {
@@ -28,4 +31,13 @@ function parseXml(xml: string): ArxivEntry[] {
     }));
   });
   return feed;
+}
+
+function populateSummary(feed: ArxivEntry[]) {
+  return Promise.all(
+    feed.map(async (entry) => {
+      const summary = await summarize(entry.abstract);
+      return { ...entry, summary };
+    })
+  );
 }
