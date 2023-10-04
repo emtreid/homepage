@@ -43,6 +43,9 @@ const articles = (await fetchArxivContent());
 				color: rgb(var(--black));
 				line-height: 1;
 			}
+			.journal {
+				style: italic;
+			}
 			.date {
 				margin: 0;
 				color: rgb(var(--gray));
@@ -86,6 +89,9 @@ const articles = (await fetchArxivContent());
 									</p>
 									<p class="date">
 										{article.pubDate && <FormattedDate date={article.pubDate} />}
+									</p>
+									<p class="journal">
+										{article.summary} 
 									</p>
 									<p class="abstract">
 										{article.abstract}
